@@ -41,6 +41,7 @@ typedef enum {
   X,
   Y,
   A,
+  ZL,
   B,
   L,
   R,
@@ -62,17 +63,12 @@ static const command step[] = {
   { A,          0 },
   // ここまでコントローラーを認識させるおまじない
 
-  // Start
-  { HOLD_CAM_UP,    0 },
-  // 初期設定など1回だけ動かしたいコードはここまで
-
   // loop Start
   { LOOP_START, 0 },
   // これより下を無限ループ
-
-  { H_LEFT,     2 },
-  { A,          2 },
-  { NOTHING,   50 },
+  { ZL,          5 },
+  { A,          5 },
+  { NOTHING,   30 },
 };
 
 // Main entry point.
@@ -243,6 +239,10 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 			state = PROCESS;
       break;
 
+    case BREATHE:
+      state = PROCESS;
+      break;
+
     case PROCESS:
       switch (step[bufindex].button)
       {
@@ -322,6 +322,10 @@ void GetNextReport(USB_JoystickReport_Input_t* const ReportData) {
 
         case A:
           ReportData->Button |= SWITCH_A;
+          break;
+
+        case ZL:
+          ReportData->Button |= SWITCH_ZL;
           break;
 
         case B:
